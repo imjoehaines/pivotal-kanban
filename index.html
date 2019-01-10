@@ -1,6 +1,7 @@
 <html>
   <head>
     <title>Pivotal Kanban</title>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
     <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js' type='text/javascript'></script>
     <script src='http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js' type='text/javascript'></script>
     <script src='http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js' type='text/javascript'></script>
@@ -9,7 +10,8 @@
         body {
             margin: 0px;
             padding: 0px;
-            background-color: rgb(35, 113, 159);
+            background-color: rgb(235, 235, 235);
+            font-family: "Source Sans Pro"
         }
 
         /* Bootstrap Hack for 5 columns */
@@ -21,13 +23,13 @@
 
         h1 {
             font-size: 18px;
-            color: #333333;
+            color: rgb(51, 51, 51);
             padding: 5px;
             text-align: center;
             font-weight: normal;
-            margin: 0;
-            position: absolute;
-            background-color: #e3e3e3;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 0px;
             border-radius: 5px;
         }
 
@@ -64,11 +66,10 @@
         }
 
         .stories {
-            padding: 30px 5;
+            padding: 10px 5;
             height: 100%;
             overflow: auto;
-            background-color: #e3e3e3;
-            border-radius: 5px;
+            border-left: 4px solid #dfdfdf;
         }
 
         .stories a {
@@ -81,10 +82,17 @@
         }
 
         .story {
-            padding: 5px;
+            padding: 15px;
+            margin-left: 10px;
             background-color: white;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
             border-radius: 5px;
+            box-shadow: 0 1px 2px rgba(0,0,0,.2);
+            color: #525252;
+        }
+
+        .hiddenstory {
+            display: none;
         }
 
         .story-name {
@@ -92,6 +100,10 @@
 
         .story-owner {
             color: #999999;
+        }
+
+        .activeproject {
+            font-weight: bold
         }
     </style>
 
@@ -127,8 +139,41 @@
     </div>
 
     <script type="text/javascript">
-        var token = window.location.href.match(/token=([A-Za-z0-9]{32})/)[1];
-        if(token !== undefined) {
+
+        function findGetParameter(parameterName) {
+            var result = null,
+                tmp = [];
+            var items = location.search.substr(1).split("&");
+            for (var index = 0; index < items.length; index++) {
+                tmp = items[index].split("=");
+                if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+            }
+            return result;
+        }
+
+        var token = findGetParameter('token');
+        var selectedProjectsStr = findGetParameter('projects');
+
+
+        var default_projects = [
+            1945065, // MentionMe
+            2236360, // Breakpoint
+            2236361, // Spark
+        ];
+
+        var selectedProjects = [];
+
+        if(selectedProjectsStr !== null) {
+            selectedProjects = $.map(selectedProjectsStr.split(','), function(value){
+                return parseInt(value, 10);
+            });
+        }
+
+        if(selectedProjects.length > 0) {
+            default_projects = selectedProjects
+        }
+
+        if(token !== null) {
             var colors = ['sandybrown', 'tomato', 'steelblue', 'gold', 'violet', 'brown'];
             var projects = [];
             var projectColors = {};
@@ -155,16 +200,20 @@
                 }).done(callback);
             };
 
-            var addStoryToDOM = function(story) {
+            var addStoryToDOM = function(story, hidden) {
                 var $container = $stories[story.current_state];
                 var color = projectColors[story.project_id];
                 var owner = owners[story.owned_by_id] || '-';
                 owners_by_name[owner] = story.owned_by_id;
-                $container.append('<a href="' + story.url + '" target="_blank"><div class="story" style="border-left: 10px solid ' + color + '" data-owner-id="' + story.owned_by_id + '" data-project-id="' + story.project_id + '"><div class="story-name">' + story.name + '</div><div class="story-owner">' + owner + '</div></div></a>');
+
+                var hiddenClass = hidden ? ' hiddenstory' : '';
+
+                $container.append('<a href="' + story.url + '" target="_blank"><div class="story'+hiddenClass+'" style="border-left: 4px solid ' + color + '" data-owner-id="' + story.owned_by_id + '" data-project-id="' + story.project_id + '"><div class="story-name">' + story.name + '</div><div class="story-owner">' + owner + '</div></div></a>');
             };
 
             var updateOwners = function() {
                 $owners.html('<option value="-1">-- Everyone --</option>')
+
                 _(owners_by_name).each(function(id, name) {
                     $owners.append('<option value="' + id + '">' + name + '</option>');
                 });
@@ -183,6 +232,7 @@
             // Get Projects
             pivotalRequest('/projects', function(response) {
                 _(response).each(function(project, i) {
+
                     projects.push({
                         name: project.name,
                         id: project.id
@@ -192,7 +242,8 @@
                     $projects.append($project);
                     $project.click(function(e) {
                         project_id = $(e.target).data('id');
-                        $('div[data-project-id="' + project_id + '"]').toggle();
+                        $('div[data-project-id="' + project_id + '"]').toggle();                        
+
                     });
 
                     // Get Owners
@@ -204,7 +255,14 @@
                         // Get stories
                         pivotalRequest('/projects/' + project.id + '/stories?filter=state:started,finished,delivered,unstarted,accepted', function(stories) {
                             _(stories).each(function(story) {
-                                addStoryToDOM(story);
+
+                                var hidden = false;
+                                if(default_projects.indexOf(project.id) === -1) {
+                                    hidden = true;
+                                }
+
+
+                                addStoryToDOM(story, hidden);
                             });
 
                             // Update select box
@@ -214,15 +272,24 @@
                         // Get accepted stories
                         pivotalRequest('/projects/' + project.id + '/stories?accepted_after=' + lastWeek, function(stories) {
                             _(stories).each(function(story) {
-                                addStoryToDOM(story);
+
+                                var hidden = false;
+                                if(default_projects.indexOf(project.id) === -1) {
+                                    hidden = true;
+                                }
+
+
+                                addStoryToDOM(story, hidden);
                             });
 
                             // Update select box
                             updateOwners();
+
                         });
                     })
                 });
             });
+
         } else {
             alert('Missing token.');
         }
