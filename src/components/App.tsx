@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 
-import Story from './Story'
+import Column from './Column'
 import fetchStories from '../api/fetch-stories'
-import {PivotalStoryResponse} from '../api/types/pivotal-story-response'
+import {CurrentState, PivotalStoryResponse} from '../api/types/pivotal-story-response'
 
 import './App.css'
 
@@ -10,6 +10,10 @@ type Props = {}
 
 type State = {
     stories: PivotalStoryResponse[]
+}
+
+type PartitionedStories = {
+    [k in keyof CurrentState]: PivotalStoryResponse[]
 }
 
 class App extends Component<Props, State> {
@@ -37,9 +41,25 @@ class App extends Component<Props, State> {
             return <p>Loading&hellip;</p>
         }
 
+        const partitionedStories = stories.reduce((acc: any, story) => {
+            if (!acc[story.current_state]) {
+                acc[story.current_state] = []
+            }
+
+            acc[story.current_state].push(story)
+
+            return acc
+        }, {})
+
         return (
-            <div>
-                {stories.map(story => <Story key={story.id} story={story}/>)}
+            <div className="App">
+                {Object.keys(partitionedStories as PartitionedStories)
+                    .map(status =>
+                        <Column key={status}
+                                status={status as CurrentState}
+                                stories={partitionedStories[status]}
+                        />
+                    )}
             </div>
         )
     }

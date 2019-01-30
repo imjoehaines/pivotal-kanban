@@ -4,7 +4,7 @@ type StoryType
     | 'chore'
     | 'release'
 
-type CurrentState
+export type CurrentState
     = 'accepted'
     | 'delivered'
     | 'finished'
@@ -31,7 +31,7 @@ export type PivotalStoryResponse = {
     estimate: number,
     story_type: StoryType,
     name: string,
-    descriptions: string,
+    description: string,
     current_state: CurrentState,
     requested_by_id: number,
     url: string,
@@ -40,4 +40,3 @@ export type PivotalStoryResponse = {
     owned_by_id: number,
     labels: Label[]
 }
-

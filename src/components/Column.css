@@ -1,0 +1,13 @@
+.Column {
+    max-width: 25vw;
+}
+
+.Column + .Column {
+    margin-left: 1rem;
+}
+
+.Column__heading {
+    color: #fefefe;
+    text-align: center;
+    margin-top: 0;
+}
