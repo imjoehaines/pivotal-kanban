@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import {DragDropContext, DragUpdate} from 'react-beautiful-dnd'
 
 import Column from './Column'
 import Filters from './Filters'
@@ -9,6 +10,7 @@ import {PROJECT_MAP} from '../constants'
 import {PivotalUserResponse} from '../types/pivotal-user-response'
 import {Status} from '../types/status'
 import partitionStoriesByStatus from '../utils/partition-stories-by-status'
+import statusToPivotalState from '../utils/status-to-pivotal-state'
 
 import './App.css'
 
@@ -39,7 +41,8 @@ class App extends Component<Props, State> {
 
         Promise.all(storyPromises)
             .then((stories) => {
-                const allStories = stories.flat()
+                // assign each story a global index so we can keep track of stories to drag and drop them
+                const allStories = stories.flat().map((story, index) => ({...story, globalIndex: index}))
 
                 this.setState(() => ({stories: allStories}))
 
@@ -76,6 +79,34 @@ class App extends Component<Props, State> {
         this.setState(() => ({selectedStoryId: -1}))
     }
 
+    private handleDragEnd = (result: DragUpdate) => {
+        console.log(result)
+
+        // didn't drop the draggable on a thing so we don't care
+        if (!result.destination) {
+            return
+        }
+
+        const stories = Array.from(this.state.stories)
+        const [removedStory] = stories.splice(result.source.index, 1)
+
+        // TODO this is temporary until we can POST to PT and update stories for real
+        const newStatus = statusToPivotalState(result.destination.droppableId as Status)
+
+        // not a valid status for some reason, this shouldn't really ever happen
+        if (newStatus === null) return
+
+        removedStory.current_state = newStatus
+
+        // @ts-ignore
+        removedStory.globalIndex = result.destination.index
+        // -- end temporary stuff
+
+        stories.splice(result.destination.index, 0, removedStory)
+
+        this.setState(() => ({stories}))
+    }
+
     private applyFilters(stories: PivotalStoryResponse[], selectedProjectId: number, selectedUserId: number): PivotalStoryResponse[] {
         return stories
             .filter(story => selectedProjectId === -1 || story.project_id === selectedProjectId)
@@ -95,20 +126,22 @@ class App extends Component<Props, State> {
 
         return (
             <div className="App">
-                {[Status.Unstarted, Status.Started, Status.Finished, Status.Delivered]
-                    .map(status =>
-                        <Column key={status}
-                                status={status}
-                                stories={partitionedStories[status]}
-                                projects={PROJECT_MAP}
-                                selectedProjectId={selectedProjectId}
-                                users={users}
-                                selectedUserId={selectedUserId}
-                                selectedStoryId={selectedStoryId}
-                                onStoryClick={this.handleStoryClick}
-                                closeStory={this.closeStory}
-                        />
-                    )}
+                <DragDropContext onDragEnd={this.handleDragEnd}>
+                    {[Status.Unstarted, Status.Started, Status.Finished, Status.Delivered]
+                        .map(status =>
+                            <Column key={status}
+                                    status={status}
+                                    stories={partitionedStories[status]}
+                                    projects={PROJECT_MAP}
+                                    selectedProjectId={selectedProjectId}
+                                    users={users}
+                                    selectedUserId={selectedUserId}
+                                    selectedStoryId={selectedStoryId}
+                                    onStoryClick={this.handleStoryClick}
+                                    closeStory={this.closeStory}
+                            />
+                        )}
+                </DragDropContext>
 
                 <Filters
                     projects={PROJECT_MAP}

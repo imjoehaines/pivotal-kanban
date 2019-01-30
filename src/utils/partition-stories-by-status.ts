@@ -1,29 +1,12 @@
 import {Status} from '../types/status'
 import {PivotalStoryResponse} from '../types/pivotal-story-response'
+import pivotalStateToStatus from './pivotal-state-to-status'
 
 type PartitionedStories = {
     [Status.Unstarted]: PivotalStoryResponse[],
     [Status.Started]: PivotalStoryResponse[],
     [Status.Finished]: PivotalStoryResponse[],
     [Status.Delivered]: PivotalStoryResponse[],
-}
-
-const pivotalStateToStatus = (pivotalState: string): Status | null => {
-    switch (pivotalState) {
-        case 'unstarted':
-            return Status.Unstarted
-
-        case 'started':
-            return Status.Started
-
-        case 'finished':
-            return Status.Finished
-
-        case 'delivered':
-            return Status.Delivered
-    }
-
-    return null
 }
 
 export default (stories: PivotalStoryResponse[]): PartitionedStories => {

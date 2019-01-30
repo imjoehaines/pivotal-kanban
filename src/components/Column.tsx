@@ -1,4 +1,5 @@
 import React from 'react'
+import {Droppable} from 'react-beautiful-dnd'
 
 import Story from './Story'
 import {PivotalStoryResponse} from '../types/pivotal-story-response'
@@ -20,27 +21,37 @@ type Props = {
 
 export default (props: Props) => {
     return (
-        <div className="Column">
-            <h2 className="Column__heading">
-                {props.status}
+        <Droppable droppableId={props.status.toString()}>
+            {(provided, _snapshot) => (
+                // TODO react-beautiful-dnd will yell at us about not using provided.placholder but using it breaks the
+                //      layout and it works without it...
 
-                <small className="Column__story-count">
-                    {props.stories ? props.stories.length : 0}
-                </small>
-            </h2>
+                <div className="Column"
+                     ref={provided.innerRef}
+                     {...provided.droppableProps}
+                >
+                    <h2 className="Column__heading">
+                        {props.status}
 
-            {(props.stories || []).map((story: PivotalStoryResponse) =>
-                <Story key={story.id}
-                       story={story}
-                       projects={props.projects}
-                       selectedProjectId={props.selectedProjectId}
-                       users={props.users}
-                       selectedUserId={props.selectedUserId}
-                       isOpen={props.selectedStoryId === story.id}
-                       onClick={props.onStoryClick}
-                       closeStory={props.closeStory}
-                />
+                        <small className="Column__story-count">
+                            {props.stories ? props.stories.length : 0}
+                        </small>
+                    </h2>
+
+                    {(props.stories || []).map((story: PivotalStoryResponse) =>
+                        <Story key={story.id}
+                               story={story}
+                               projects={props.projects}
+                               selectedProjectId={props.selectedProjectId}
+                               users={props.users}
+                               selectedUserId={props.selectedUserId}
+                               isOpen={props.selectedStoryId === story.id}
+                               onClick={props.onStoryClick}
+                               closeStory={props.closeStory}
+                        />
+                    )}
+                </div>
             )}
-        </div>
+        </Droppable>
     )
 }
