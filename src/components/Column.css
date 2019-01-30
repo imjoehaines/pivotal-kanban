@@ -1,5 +1,5 @@
 .Column {
-    max-width: 25vw;
+    width: 25vw;
 }
 
 .Column + .Column {
