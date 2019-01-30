@@ -8,4 +8,10 @@ export const PROJECT_IDS = [
     SPARK_PROJECT_ID,
 ]
 
+export const PROJECT_MAP = new Map([
+    [MENTION_ME_PROJECT_ID, 'Mention Me'],
+    [BREAKPOINT_PROJECT_ID, 'Breakpoint'],
+    [SPARK_PROJECT_ID, 'Spark']
+])
+
 export const ROOT_URL = 'https://www.pivotaltracker.com/services/v5'

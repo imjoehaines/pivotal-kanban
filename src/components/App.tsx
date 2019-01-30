@@ -5,6 +5,7 @@ import fetchStories from '../api/fetch-stories'
 import {CurrentState, PivotalStoryResponse} from '../api/types/pivotal-story-response'
 
 import './App.css'
+import {PROJECT_MAP} from '../constants'
 
 type Props = {}
 
@@ -58,6 +59,7 @@ class App extends Component<Props, State> {
                         <Column key={status}
                                 status={status as CurrentState}
                                 stories={partitionedStories[status]}
+                                projects={PROJECT_MAP}
                         />
                     )}
             </div>

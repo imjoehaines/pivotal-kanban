@@ -7,7 +7,8 @@ import './Column.css'
 
 type Props = {
     status: CurrentState,
-    stories: PivotalStoryResponse[]
+    stories: PivotalStoryResponse[],
+    projects: Map<number, string>
 }
 
 export default (props: Props) => {
@@ -18,6 +19,7 @@ export default (props: Props) => {
             {props.stories.map((story: PivotalStoryResponse) =>
                 <Story key={story.id}
                        story={story}
+                       projects={props.projects}
                 />
             )}
         </div>

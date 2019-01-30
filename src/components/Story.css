@@ -35,3 +35,8 @@
     padding: .1rem .2rem;
     color: darkgoldenrod;
 }
+
+.Story__project {
+    font-size: .8rem;
+    color: #666;
+}
