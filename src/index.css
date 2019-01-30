@@ -22,3 +22,13 @@ code {
 p {
     margin-bottom: 0;
 }
+
+a {
+    color: #de3473;
+    text-decoration-color: rgba(222, 52, 115, .33);
+}
+
+a:hover {
+    color: #502e3a;
+    text-decoration-color: rgba(80, 46, 58, .33);
+}
