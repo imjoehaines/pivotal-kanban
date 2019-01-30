@@ -3,11 +3,19 @@
 }
 
 .Column + .Column {
-    margin-left: 1rem;
+    margin-left: 2rem;
 }
 
 .Column__heading {
-    color: #fefefe;
+    width: calc(100% + 2rem);
     text-align: center;
     margin-top: 0;
+    margin-left: -1rem;
+    padding: 1rem;
+    text-transform: capitalize;
+    position: sticky;
+    top: 0;
+    background: #ddd;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    z-index: 1000;
 }
