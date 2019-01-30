@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 
 import {PivotalStoryResponse} from '../types/pivotal-story-response'
 
@@ -31,7 +31,7 @@ export default (props: Props) => {
             </h3>
 
             {isOpen && (
-                <div className="Story__body">
+                <Fragment>
                     {(story.description || '')
                         .split('\n')
                         .filter(line => !!line.trim())
@@ -47,7 +47,16 @@ export default (props: Props) => {
                             Open in Pivotal Tracker
                         </a>
                     </p>
-                </div>
+
+                    <p>
+                        <a href="#" onClick={event => {
+                            event.preventDefault()
+                            onClick(-1)
+                        }}>
+                            Close
+                        </a>
+                    </p>
+                </Fragment>
             )}
 
             <div className="Story__metadata">
