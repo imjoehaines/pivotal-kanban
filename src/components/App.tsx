@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 
 import Column from './Column'
+import Filters from './Filters'
 import fetchStories from '../api/fetch-stories'
 import {CurrentState, PivotalStoryResponse} from '../api/types/pivotal-story-response'
 
@@ -10,7 +11,8 @@ import {PROJECT_MAP} from '../constants'
 type Props = {}
 
 type State = {
-    stories: PivotalStoryResponse[]
+    stories: PivotalStoryResponse[],
+    selectedProjectFilter: number
 }
 
 type PartitionedStories = {
@@ -21,28 +23,31 @@ class App extends Component<Props, State> {
     state = {
         // I don't know why we need to tell typescript this when it's in the type itself, but if this is missing then
         // it decides state.stories is of type `never[]`, so you can't use the array at all...
-        stories: [] as PivotalStoryResponse[]
+        stories: [] as PivotalStoryResponse[],
+        selectedProjectFilter: -1
     }
 
     componentDidMount(): void {
         Promise.all(fetchStories())
             .then((stories) => {
-                    this.setState(oldState => ({
-                        ...oldState,
-                        stories: stories.flat()
-                    }))
-                }
-            )
+                this.setState(() => ({stories: stories.flat()}))
+            })
+    }
+
+    private handleProjectFilterChange = (projectId: number) => {
+        this.setState(() => ({selectedProjectFilter: projectId}))
     }
 
     render() {
-        const {stories} = this.state
+        const {stories, selectedProjectFilter} = this.state
 
         if (stories.length === 0) {
-            return <p>Loading&hellip;</p>
+            return <div className="App__loading"><h2>Loading&hellip;</h2></div>
         }
 
-        const partitionedStories = stories.reduce((acc: any, story) => {
+        const filteredStories = stories.filter(story => selectedProjectFilter === -1 || story.project_id === selectedProjectFilter)
+
+        const partitionedStories = filteredStories.reduce((acc: any, story) => {
             if (!acc[story.current_state]) {
                 acc[story.current_state] = []
             }
@@ -62,6 +67,8 @@ class App extends Component<Props, State> {
                                 projects={PROJECT_MAP}
                         />
                     )}
+
+                <Filters projects={PROJECT_MAP} onProjectFilterChange={this.handleProjectFilterChange}/>
             </div>
         )
     }
