@@ -34,23 +34,29 @@ class App extends Component<Props, State> {
     }
 
     componentDidMount(): void {
-        Promise.all(fetchStories())
+        const storyPromises = fetchStories()
+        const userPromises = fetchUsers()
+
+        Promise.all(storyPromises)
             .then((stories) => {
-                this.setState(() => ({stories: stories.flat()}))
-            })
+                const allStories = stories.flat()
 
-        // TODO remove users who do not own a story
-        Promise.all(fetchUsers())
-            .then((users) => {
-                this.setState(() => ({
-                    users: users.flat().reduce((userMap: Map<number, string>, user: PivotalUserResponse) => {
-                        if (!userMap.has(user.person.id)) {
-                            userMap.set(user.person.id, user.person.name)
-                        }
+                this.setState(() => ({stories: allStories}))
 
-                        return userMap
-                    }, new Map())
-                }))
+                const ownerIds = allStories.map((story: PivotalStoryResponse) => story.owned_by_id)
+
+                Promise.all(userPromises)
+                    .then((users) => {
+                        this.setState(() => ({
+                            users: users.flat().reduce((userMap: Map<number, string>, user: PivotalUserResponse) => {
+                                if (ownerIds.includes(user.person.id) && !userMap.has(user.person.id)) {
+                                    userMap.set(user.person.id, user.person.name)
+                                }
+
+                                return userMap
+                            }, new Map())
+                        }))
+                    })
             })
     }
 
