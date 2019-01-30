@@ -1,6 +1,7 @@
 import React, {Fragment} from 'react'
 
 import {PivotalStoryResponse} from '../types/pivotal-story-response'
+import withPreventDefault from '../utils/with-prevent-default'
 
 import './Story.css'
 
@@ -11,11 +12,12 @@ type Props = {
     users: Map<number, string>,
     selectedUserId: number,
     isOpen: boolean,
-    onClick: (storyId: number) => void
+    onClick: (storyId: number) => void,
+    closeStory: () => void,
 }
 
 export default (props: Props) => {
-    const {story, projects, selectedProjectId, users, selectedUserId, isOpen, onClick} = props
+    const {story, projects, selectedProjectId, users, selectedUserId, isOpen, onClick, closeStory} = props
 
     return (
         <div
@@ -49,10 +51,7 @@ export default (props: Props) => {
                     </p>
 
                     <p>
-                        <a href="#" onClick={event => {
-                            event.preventDefault()
-                            onClick(-1)
-                        }}>
+                        <a href="#" onClick={withPreventDefault(closeStory)}>
                             Close
                         </a>
                     </p>

@@ -14,7 +14,8 @@ type Props = {
     users: Map<number, string>,
     selectedUserId: number,
     selectedStoryId: number,
-    onStoryClick: (storyId: number) => void
+    onStoryClick: (storyId: number) => void,
+    closeStory: () => void,
 }
 
 export default (props: Props) => {
@@ -37,6 +38,7 @@ export default (props: Props) => {
                        selectedUserId={props.selectedUserId}
                        isOpen={props.selectedStoryId === story.id}
                        onClick={props.onStoryClick}
+                       closeStory={props.closeStory}
                 />
             )}
         </div>

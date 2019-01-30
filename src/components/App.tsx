@@ -66,6 +66,10 @@ class App extends Component<Props, State> {
         this.setState(() => ({selectedStoryId: storyId}))
     }
 
+    private closeStory = () => {
+        this.setState(() => ({selectedStoryId: -1}))
+    }
+
     private applyFilters(stories: PivotalStoryResponse[], selectedProjectId: number, selectedUserId: number): PivotalStoryResponse[] {
         return stories
             .filter(story => selectedProjectId === -1 || story.project_id === selectedProjectId)
@@ -96,6 +100,7 @@ class App extends Component<Props, State> {
                                 selectedUserId={selectedUserId}
                                 selectedStoryId={selectedStoryId}
                                 onStoryClick={this.handleStoryClick}
+                                closeStory={this.closeStory}
                         />
                     )}
 
