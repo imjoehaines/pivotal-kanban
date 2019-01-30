@@ -10,11 +10,10 @@ type Props = {
 
 export default (props: Props) => {
     return (
-        <div className="Story">
-            <span className="Story__type">
-                {props.story.story_type === 'bug' && '🐞'}
-                {props.story.story_type === 'feature' && '⭐️'}
-            </span>
+        <div className={`Story Story--${props.story.story_type}`}>
+            {!!props.story.estimate && (
+                <span className="Story__estimate">{props.story.estimate}</span>
+            )}
 
             <h3 className="Story__heading">
                 {props.story.name}
