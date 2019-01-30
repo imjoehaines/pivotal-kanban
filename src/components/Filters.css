@@ -8,6 +8,7 @@
     border-left: none;
     border-bottom: none;
     border-top-right-radius: .2rem;
+    z-index: 1000;
 }
 
 .Filters__filter + .Filters__filter {
