@@ -1,5 +1,7 @@
 .Column {
     width: 25vw;
+    /* leave some room at the bottom for the filters */
+    margin-bottom: 3rem;
 }
 
 .Column + .Column {
@@ -20,4 +22,9 @@
     box-shadow: 1px 1px 2px #502e3a;
     color: #fff;
     z-index: 1000;
+}
+
+.Column__story-count {
+    margin-left: .66rem;
+    font-weight: normal;
 }

@@ -20,7 +20,13 @@ type Props = {
 export default (props: Props) => {
     return (
         <div className="Column">
-            <h2 className="Column__heading">{props.status}</h2>
+            <h2 className="Column__heading">
+                {props.status}
+
+                <small className="Column__story-count">
+                    {props.stories ? props.stories.length : 0}
+                </small>
+            </h2>
 
             {(props.stories || []).map((story: PivotalStoryResponse) =>
                 <Story key={story.id}
