@@ -4,7 +4,7 @@ import fetch from '../utils/fetch'
 
 export default (): Promise<PivotalStoryResponse>[] =>
     PROJECT_IDS.map(projectId =>
-        fetch(`/projects/${projectId}/stories`)
+        fetch(`/projects/${projectId}/stories?filter=state:started,finished,delivered,unstarted`)
             .then((response: Response | Error) => {
                     if (response instanceof Error) {
                         throw response
