@@ -9,19 +9,18 @@ type Props = {
     projects: Map<number, string>,
     selectedProjectId: number,
     users: Map<number, string>,
-    selectedUserId: number
+    selectedUserId: number,
+    isOpen: boolean,
+    onClick: (storyId: number) => void
 }
 
 export default (props: Props) => {
-    const {story, projects, selectedProjectId, users, selectedUserId} = props
+    const {story, projects, selectedProjectId, users, selectedUserId, isOpen, onClick} = props
 
     return (
-        <a
-            className={`Story Story--${story.story_type}`}
-            title="Open in Pivotal Tracker"
-            href={`https://www.pivotaltracker.com/story/show/${story.id}`}
-            target="_blank"
-            rel="noopener noreferrer"
+        <div
+            className={`Story Story--${story.story_type}${isOpen ? ' Story--open' : ''}`}
+            onClick={() => isOpen || onClick(story.id)}
         >
             {!!story.estimate && (
                 <span className="Story__estimate">{story.estimate}</span>
@@ -30,6 +29,26 @@ export default (props: Props) => {
             <h3 className="Story__heading">
                 {story.name}
             </h3>
+
+            {isOpen && (
+                <div className="Story__body">
+                    {(story.description || '')
+                        .split('\n')
+                        .filter(line => !!line.trim())
+                        .map((line, index) => <p key={index}>{line}</p>)
+                    }
+
+                    <p>
+                        <a title="Open in Pivotal Tracker"
+                           href={`https://www.pivotaltracker.com/story/show/${story.id}`}
+                           target="_blank"
+                           rel="noopener noreferrer"
+                        >
+                            Open in Pivotal Tracker
+                        </a>
+                    </p>
+                </div>
+            )}
 
             <div className="Story__metadata">
                 {selectedUserId === -1 && users.has(story.owned_by_id)
@@ -41,6 +60,6 @@ export default (props: Props) => {
                     <span className="Story__project">{projects.get(story.project_id)}</span>
                 )}
             </div>
-        </a>
+        </div>
     )
 }

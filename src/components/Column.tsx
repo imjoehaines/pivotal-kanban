@@ -11,7 +11,9 @@ type Props = {
     projects: Map<number, string>,
     selectedProjectId: number,
     users: Map<number, string>,
-    selectedUserId: number
+    selectedUserId: number,
+    selectedStoryId: number,
+    onStoryClick: (storyId: number) => void
 }
 
 export default (props: Props) => {
@@ -26,6 +28,8 @@ export default (props: Props) => {
                        selectedProjectId={props.selectedProjectId}
                        users={props.users}
                        selectedUserId={props.selectedUserId}
+                       isOpen={props.selectedStoryId === story.id}
+                       onClick={props.onStoryClick}
                 />
             )}
         </div>

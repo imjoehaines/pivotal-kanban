@@ -17,6 +17,7 @@ type State = {
     selectedProjectId: number,
     users: Map<number, string>,
     selectedUserId: number,
+    selectedStoryId: number,
 }
 
 type PartitionedStories = {
@@ -30,7 +31,8 @@ class App extends Component<Props, State> {
         stories: [] as PivotalStoryResponse[],
         selectedProjectId: -1,
         users: new Map(),
-        selectedUserId: -1
+        selectedUserId: -1,
+        selectedStoryId: -1,
     }
 
     componentDidMount(): void {
@@ -61,6 +63,10 @@ class App extends Component<Props, State> {
         this.setState(() => ({selectedUserId: userId}))
     }
 
+    private handleStoryClick = (storyId: number) => {
+        this.setState(() => ({selectedStoryId: storyId}))
+    }
+
     private applyFilters(stories: PivotalStoryResponse[], selectedProjectId: number, selectedUserId: number): PivotalStoryResponse[] {
         return stories
             .filter(story => selectedProjectId === -1 || story.project_id === selectedProjectId)
@@ -80,7 +86,7 @@ class App extends Component<Props, State> {
     }
 
     render() {
-        const {stories, selectedProjectId, users, selectedUserId} = this.state
+        const {stories, selectedProjectId, users, selectedUserId, selectedStoryId} = this.state
 
         if (stories.length === 0) {
             return <div className="App__loading"><h2>Loading&hellip;</h2></div>
@@ -101,6 +107,8 @@ class App extends Component<Props, State> {
                                 selectedProjectId={selectedProjectId}
                                 users={users}
                                 selectedUserId={selectedUserId}
+                                selectedStoryId={selectedStoryId}
+                                onStoryClick={this.handleStoryClick}
                         />
                     )}
 
