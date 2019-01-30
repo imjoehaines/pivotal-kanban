@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 
+import Story from './Story'
 import fetchStories from '../api/fetch-stories'
 import {PivotalStoryResponse} from '../api/types/pivotal-story-response'
 
@@ -38,7 +39,7 @@ class App extends Component<Props, State> {
 
         return (
             <div>
-                {stories.map(story => <p key={story.id}>{story.name}</p>)}
+                {stories.map(story => <Story key={story.id} story={story}/>)}
             </div>
         )
     }
