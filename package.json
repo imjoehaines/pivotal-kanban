@@ -22,9 +22,8 @@
     "extends": "react-app"
   },
   "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
+    "last 2 chrome version",
+    "last 2 firefox version",
+    "last 1 safari version"
   ]
 }
