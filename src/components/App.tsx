@@ -12,7 +12,7 @@ type Props = {}
 
 type State = {
     stories: PivotalStoryResponse[],
-    selectedProjectFilter: number
+    selectedProjectId: number
 }
 
 type PartitionedStories = {
@@ -24,7 +24,7 @@ class App extends Component<Props, State> {
         // I don't know why we need to tell typescript this when it's in the type itself, but if this is missing then
         // it decides state.stories is of type `never[]`, so you can't use the array at all...
         stories: [] as PivotalStoryResponse[],
-        selectedProjectFilter: -1
+        selectedProjectId: -1
     }
 
     componentDidMount(): void {
@@ -35,17 +35,17 @@ class App extends Component<Props, State> {
     }
 
     private handleProjectFilterChange = (projectId: number) => {
-        this.setState(() => ({selectedProjectFilter: projectId}))
+        this.setState(() => ({selectedProjectId: projectId}))
     }
 
     render() {
-        const {stories, selectedProjectFilter} = this.state
+        const {stories, selectedProjectId} = this.state
 
         if (stories.length === 0) {
             return <div className="App__loading"><h2>Loading&hellip;</h2></div>
         }
 
-        const filteredStories = stories.filter(story => selectedProjectFilter === -1 || story.project_id === selectedProjectFilter)
+        const filteredStories = stories.filter(story => selectedProjectId === -1 || story.project_id === selectedProjectId)
 
         const partitionedStories = filteredStories.reduce((acc: any, story) => {
             if (!acc[story.current_state]) {
@@ -65,6 +65,7 @@ class App extends Component<Props, State> {
                                 status={status as CurrentState}
                                 stories={partitionedStories[status]}
                                 projects={PROJECT_MAP}
+                                selectedProjectId={selectedProjectId}
                         />
                     )}
 

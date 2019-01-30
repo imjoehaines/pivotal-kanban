@@ -6,11 +6,12 @@ import './Story.css'
 
 type Props = {
     story: PivotalStoryResponse,
-    projects: Map<number, string>
+    projects: Map<number, string>,
+    selectedProjectId: number
 }
 
 export default (props: Props) => {
-    const {story, projects} = props
+    const {story, projects, selectedProjectId} = props
 
     return (
         <div className={`Story Story--${story.story_type}`}>
@@ -23,7 +24,7 @@ export default (props: Props) => {
             </h3>
 
 
-            {projects.has(story.project_id) && (
+            {selectedProjectId === -1 && projects.has(story.project_id) && (
                 <p className="Story__project">{projects.get(story.project_id)}</p>
             )}
         </div>
