@@ -36,7 +36,14 @@
     color: darkgoldenrod;
 }
 
-.Story__project {
+.Story__metadata {
     font-size: .8rem;
     color: #666;
+    margin-top: .8rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.Story__project {
+    text-align: right;
 }

@@ -9,7 +9,9 @@ type Props = {
     status: CurrentState,
     stories: PivotalStoryResponse[],
     projects: Map<number, string>,
-    selectedProjectId: number
+    selectedProjectId: number,
+    users: Map<number, string>,
+    selectedUserId: number
 }
 
 export default (props: Props) => {
@@ -22,6 +24,8 @@ export default (props: Props) => {
                        story={story}
                        projects={props.projects}
                        selectedProjectId={props.selectedProjectId}
+                       users={props.users}
+                       selectedUserId={props.selectedUserId}
                 />
             )}
         </div>

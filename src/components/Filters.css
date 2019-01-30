@@ -10,11 +10,6 @@
     border-top-right-radius: .2rem;
 }
 
-.App__loading {
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.Filters__filter + .Filters__filter {
+    margin-left: 1rem;
 }
