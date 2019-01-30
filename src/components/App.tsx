@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 
-import fetchStories from './api/fetch-stories'
-import {PivotalStoryResponse} from './api/types/pivotal-story-response'
+import fetchStories from '../api/fetch-stories'
+import {PivotalStoryResponse} from '../api/types/pivotal-story-response'
 
 import './App.css'
 
