@@ -5,8 +5,12 @@ import handleFetchErrors from './handle-fetch-errors'
 
 const token = getToken(localStorage)
 
-export default (path: string) =>
-    fetch(ROOT_URL + path, {
+const asGetParameters = (parameters: Record<string, string>) =>
+    '?' + new URLSearchParams(parameters)
+
+
+export default (path: string, parameters: Record<string, string>) =>
+    fetch(ROOT_URL + path + asGetParameters(parameters), {
         headers: {
             'X-TrackerToken': token
         }
