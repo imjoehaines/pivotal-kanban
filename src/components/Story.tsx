@@ -16,7 +16,13 @@ export default (props: Props) => {
     const {story, projects, selectedProjectId, users, selectedUserId} = props
 
     return (
-        <div className={`Story Story--${story.story_type}`}>
+        <a
+            className={`Story Story--${story.story_type}`}
+            title="Open in Pivotal Tracker"
+            href={`https://www.pivotaltracker.com/story/show/${story.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
+        >
             {!!story.estimate && (
                 <span className="Story__estimate">{story.estimate}</span>
             )}
@@ -35,6 +41,6 @@ export default (props: Props) => {
                     <span className="Story__project">{projects.get(story.project_id)}</span>
                 )}
             </div>
-        </div>
+        </a>
     )
 }
