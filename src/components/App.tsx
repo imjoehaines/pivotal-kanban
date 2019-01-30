@@ -4,9 +4,11 @@ import Column from './Column'
 import Filters from './Filters'
 import fetchUsers from '../api/fetch-users'
 import fetchStories from '../api/fetch-stories'
-import {CurrentState, PivotalStoryResponse} from '../api/types/pivotal-story-response'
+import {PivotalStoryResponse} from '../types/pivotal-story-response'
 import {PROJECT_MAP} from '../constants'
-import {PivotalUserResponse} from '../api/types/pivotal-user-response'
+import {PivotalUserResponse} from '../types/pivotal-user-response'
+import {Status} from '../types/status'
+import partitionStoriesByStatus from '../utils/partition-stories-by-status'
 
 import './App.css'
 
@@ -18,10 +20,6 @@ type State = {
     users: Map<number, string>,
     selectedUserId: number,
     selectedStoryId: number,
-}
-
-type PartitionedStories = {
-    [k in keyof CurrentState]: PivotalStoryResponse[]
 }
 
 class App extends Component<Props, State> {
@@ -41,6 +39,7 @@ class App extends Component<Props, State> {
                 this.setState(() => ({stories: stories.flat()}))
             })
 
+        // TODO remove users who do not own a story
         Promise.all(fetchUsers())
             .then((users) => {
                 this.setState(() => ({
@@ -73,18 +72,6 @@ class App extends Component<Props, State> {
             .filter(story => selectedUserId === -1 || story.owner_ids.includes(selectedUserId))
     }
 
-    private partitionStoriesByStatus(stories: PivotalStoryResponse[]): PartitionedStories {
-        return stories.reduce((acc: any, story) => {
-            if (!acc[story.current_state]) {
-                acc[story.current_state] = []
-            }
-
-            acc[story.current_state].push(story)
-
-            return acc
-        }, {})
-    }
-
     render() {
         const {stories, selectedProjectId, users, selectedUserId, selectedStoryId} = this.state
 
@@ -94,15 +81,15 @@ class App extends Component<Props, State> {
 
         const filteredStories = this.applyFilters(stories, selectedProjectId, selectedUserId)
 
-        const partitionedStories = this.partitionStoriesByStatus(filteredStories)
+        const partitionedStories = partitionStoriesByStatus(filteredStories)
 
         return (
             <div className="App">
-                {Object.keys(partitionedStories)
+                {[Status.Unstarted, Status.Started, Status.Finished, Status.Delivered]
                     .map(status =>
                         <Column key={status}
-                                status={status as CurrentState}
-                                stories={partitionedStories[status as any] as PivotalStoryResponse[]}
+                                status={status}
+                                stories={partitionedStories[status]}
                                 projects={PROJECT_MAP}
                                 selectedProjectId={selectedProjectId}
                                 users={users}

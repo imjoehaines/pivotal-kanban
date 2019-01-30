@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {PivotalStoryResponse} from '../api/types/pivotal-story-response'
+import {PivotalStoryResponse} from '../types/pivotal-story-response'
 
 import './Story.css'
 

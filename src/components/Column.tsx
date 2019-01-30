@@ -1,12 +1,13 @@
 import React from 'react'
 
 import Story from './Story'
-import {CurrentState, PivotalStoryResponse} from '../api/types/pivotal-story-response'
+import {PivotalStoryResponse} from '../types/pivotal-story-response'
+import {Status} from '../types/status'
 
 import './Column.css'
 
 type Props = {
-    status: CurrentState,
+    status: Status,
     stories: PivotalStoryResponse[],
     projects: Map<number, string>,
     selectedProjectId: number,

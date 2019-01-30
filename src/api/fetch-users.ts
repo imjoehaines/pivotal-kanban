@@ -1,5 +1,5 @@
 import {PROJECT_IDS} from '../constants'
-import {PivotalUserResponse} from './types/pivotal-user-response'
+import {PivotalUserResponse} from '../types/pivotal-user-response'
 import fetch from '../utils/fetch'
 
 export default (): Promise<PivotalUserResponse>[] =>

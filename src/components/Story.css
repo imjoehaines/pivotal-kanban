@@ -15,7 +15,7 @@
     cursor: pointer;
 }
 
-.Story:hover {
+.Story:hover, .Story--open {
     box-shadow: 0 10px 20px rgba(0, 0, 0, .25);
 }
 
