@@ -1,11 +1,7 @@
 .Column {
-    width: 25vw;
     /* leave some room at the bottom for the filters */
     margin-bottom: 3rem;
-}
-
-.Column + .Column {
-    margin-left: 2rem;
+    grid-row: 1;
 }
 
 .Column__heading {

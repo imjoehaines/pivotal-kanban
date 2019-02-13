@@ -1,6 +1,8 @@
 .App {
     padding: 0 1rem 1rem;
-    display: flex;
+    display: grid;
+    grid-auto-columns: 20rem;
+    grid-gap: 2rem;
 }
 
 .App__loading {
