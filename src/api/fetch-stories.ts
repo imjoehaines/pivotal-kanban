@@ -7,7 +7,7 @@ export default (): Promise<PivotalStoryResponse>[] =>
         fetch(
             `/projects/${projectId}/stories`,
             {
-                filter: 'state:started,finished,delivered,unstarted AND type:feature,bug,chore'
+                filter: 'type:feature,bug,chore'
             }
         )
             .then((response: Response | Error) => {

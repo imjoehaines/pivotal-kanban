@@ -2,14 +2,19 @@ import {Status} from '../types/status'
 import {PivotalStoryResponse} from '../types/pivotal-story-response'
 
 type PartitionedStories = {
+    [Status.Unscheduled]: PivotalStoryResponse[],
     [Status.Unstarted]: PivotalStoryResponse[],
     [Status.Started]: PivotalStoryResponse[],
     [Status.Finished]: PivotalStoryResponse[],
     [Status.Delivered]: PivotalStoryResponse[],
+    [Status.Accepted]: PivotalStoryResponse[]
 }
 
 const pivotalStateToStatus = (pivotalState: string): Status | null => {
     switch (pivotalState) {
+        case 'unscheduled':
+            return Status.Unscheduled
+
         case 'unstarted':
             return Status.Unstarted
 
@@ -21,9 +26,12 @@ const pivotalStateToStatus = (pivotalState: string): Status | null => {
 
         case 'delivered':
             return Status.Delivered
+
+        case 'accepted':
+            return Status.Accepted
     }
 
-    return null
+    throw new Error(`Unknown status "${pivotalState}"`)
 }
 
 export default (stories: PivotalStoryResponse[]): PartitionedStories => {

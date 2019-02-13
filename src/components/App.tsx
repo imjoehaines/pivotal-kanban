@@ -95,8 +95,14 @@ class App extends Component<Props, State> {
 
         return (
             <div className="App">
-                {[Status.Unstarted, Status.Started, Status.Finished, Status.Delivered]
-                    .map(status =>
+                {[
+                    Status.Unscheduled,
+                    Status.Unstarted,
+                    Status.Started,
+                    Status.Finished,
+                    Status.Delivered,
+                    Status.Accepted
+                ].map(status =>
                         <Column key={status}
                                 status={status}
                                 stories={partitionedStories[status]}
