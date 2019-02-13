@@ -18,15 +18,25 @@ type Props = {
     closeStory: () => void,
 }
 
+const sumStoryPoints = (stories: PivotalStoryResponse[]) =>
+    stories.reduce(
+        (sum: number, story: PivotalStoryResponse) => sum + (story.estimate || 0),
+        0
+    )
+
 export default (props: Props) => {
     return (
         <div className="Column">
             <h2 className="Column__heading">
                 {props.status}
 
-                <small className="Column__story-count">
+                <small className="Column__story-count" title="Number of stories">
                     {props.stories ? props.stories.length : 0}
                 </small>
+
+                <span className="Column__story-points" title="Total story points">
+                    {props.stories ? sumStoryPoints(props.stories) : null}
+                </span>
             </h2>
 
             {(props.stories || []).map((story: PivotalStoryResponse) =>
